@@ -1,32 +1,37 @@
 <section>
-  <p class="title-table">Lista de Produtos cadastrados</p>
-  <table class="list-of-products">
-    <tr class="header-table">
-      <th>Nome</th>
-      <th>Código de Barras</th>
-      <th>Preço</th>
-      <th>Ações</th>
-    </tr>
-    <tr 
-    *ngFor="let product of list">
-      <td>{{ product.nome }}</td>
-      <td>{{ product.codigoBarras }}</td>
-      <td>R$ {{ product.preco }}</td>
-      <td class="td-buttons">
-        <button
-          class="edit"
-          [routerLink]="['/edit', product.id]"
-        >
-          Editar
-        </button>
-        <button
-          class="delete"
-          (click)="deleteItem(product)">
-          Excluir
-        </button>
-      </td>
-    </tr>
-  </table>
+  <ng-container *ngIf="list.length > 0; else noProducts">
+    <p class="title-table">Lista de Produtos cadastrados</p>
+    <table class="list-of-products">
+      <tr class="header-table">
+        <th>Nome</th>
+        <th>Código de Barras</th>
+        <th>Preço</th>
+        <th>Ações</th>
+      </tr>
+      <tr 
+      *ngFor="let product of list">
+        <td>{{ product.nome }}</td>
+        <td>{{ product.codigoBarras }}</td>
+        <td>R$ {{ product.preco }}</td>
+        <td class="td-buttons">
+          <button
+            class="edit"
+            [routerLink]="['/edit', product.id]"
+          >
+            Editar
+          </button>
+          <button
+            class="delete"
+            (click)="deleteItem(product)">
+            Excluir
+          </button>
+        </td>
+      </tr>
+    </table>
+  </ng-container>
+  <ng-template #noProducts>
+    <h1>Não há produtos cadastrados na lista</h1>
+  </ng-template>
   <div *ngIf="deleteConfirmationVisible" class="delete-window">
     <div class="delete-popup">
       <h2 class="text">Tem certeza de que deseja excluir o produto {{ itemToDelete.nome }}?</h2>

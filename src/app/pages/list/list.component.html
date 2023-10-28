@@ -9,13 +9,13 @@
     </tr>
     <tr 
     *ngFor="let product of list">
-      <td>{{ product.name }}</td>
-      <td>{{ product.code }}</td>
-      <td>R$ {{ product.price }}</td>
+      <td>{{ product.nome }}</td>
+      <td>{{ product.codigoBarras }}</td>
+      <td>R$ {{ product.preco }}</td>
       <td class="td-buttons">
         <button
           class="edit"
-          [routerLink]="['/edit', product.code]"
+          [routerLink]="['/edit', product.codigoBarras]"
         >
           Editar
         </button>

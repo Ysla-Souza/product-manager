@@ -1,0 +1,50 @@
+section {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  min-height: 90vh;
+}
+
+form {
+  width: 80%;
+  padding: 4em;
+  border-radius: 10px;
+  font-weight: bolder;
+}
+
+.div-label-input {
+  display: flex;
+  flex-direction: column;
+  padding: 1em 0;
+}
+
+label {
+  margin-bottom: 0.5em;
+  font-size: 1.1em;
+}
+
+input {
+  padding: 0.8em;
+  border: none;
+  border-bottom: 0.1em solid #1c3253;
+}
+
+button {
+  margin-top: 4em;
+  width: 100%;
+  padding: 1em;
+  background-color: #1c3253;
+  color: white;
+  font-weight: bolder;
+  cursor: pointer;
+}
+
+.error {
+  padding-top: 3em;
+  color: #1c3253;
+  width: 100%;
+  text-align: center;
+  font-weight: bolder;
+  height: 10vh;
+}

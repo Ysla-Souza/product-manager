@@ -1,0 +1,39 @@
+<section>
+  <p class="title-table">Lista de Produtos cadastrados</p>
+  <table class="list-of-products">
+    <tr class="header-table">
+      <th>Nome</th>
+      <th>Código de Barras</th>
+      <th>Preço</th>
+      <th>Ações</th>
+    </tr>
+    <tr 
+    *ngFor="let product of list">
+      <td>{{ product.name }}</td>
+      <td>{{ product.code }}</td>
+      <td>R$ {{ product.price }}</td>
+      <td class="td-buttons">
+        <button
+          class="edit"
+          [routerLink]="['/edit', product.code]"
+        >
+          Editar
+        </button>
+        <button
+          class="delete"
+          (click)="deleteItem(product)">
+          Excluir
+        </button>
+      </td>
+    </tr>
+  </table>
+  <div *ngIf="deleteConfirmationVisible" class="delete-window">
+    <div class="delete-popup">
+      <h2 class="text">Tem certeza de que deseja excluir o produto "Nome do produto"?</h2>
+      <div class="div-buttons">
+        <button (click)="confirmDelete()" class="button-confirm">Confirmar</button>
+        <button (click)="cancelDelete()" class="button-cancel">Cancelar</button>
+      </div>
+    </div>
+  </div>
+</section>

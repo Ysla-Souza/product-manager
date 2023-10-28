@@ -1,0 +1,24 @@
+<section>
+  <form
+  (submit)="onSubmit()"
+  #productForm="ngForm"
+  >
+    <h1 class="title">Cadastro de Produtos</h1>
+    <div class="div-label-input">
+      <label for="name">Nome:</label>
+      <input type="text" id="name" name="name" [(ngModel)]="name" required>
+    </div>
+    <div class="div-label-input">
+      <label for="code">Código de Barras:</label>
+      <input type="text" id="code" name="code" [(ngModel)]="code" required>
+    </div>
+    <div class="div-label-input">
+      <label for="price">Preço:</label>
+      <input type="number" id="price" name="price" [(ngModel)]="price" required>
+    </div>
+    <button type="submit">Cadastrar</button>
+    <div class="error">
+      <h1>{{ errorMessage }}</h1>
+    </div>
+  </form>
+</section>

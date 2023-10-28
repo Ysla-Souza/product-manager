@@ -8,6 +8,7 @@ import { EditComponent } from './pages/edit/edit.component';
 import { RegisterComponent } from './pages/register/register.component';
 import { ListComponent } from './pages/list/list.component';
 import { FormsModule } from '@angular/forms';
+import { HttpClientModule } from '@angular/common/http';
 
 @NgModule({
   declarations: [
@@ -18,9 +19,11 @@ import { FormsModule } from '@angular/forms';
     ListComponent,
   ],
   imports: [
+    HttpClientModule,
     FormsModule,
     BrowserModule,
-    AppRoutingModule
+    AppRoutingModule,
+    
   ],
   providers: [],
   bootstrap: [AppComponent]

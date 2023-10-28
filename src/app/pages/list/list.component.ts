@@ -1,4 +1,5 @@
 import { Component } from '@angular/core';
+import axios from 'axios';
 
 interface IProduct {
   name: string;
@@ -29,6 +30,11 @@ export class ListComponent {
     ];
     this.itemToDelete = { name: '', code: '', price: 0 };
     this.deleteConfirmationVisible = false;
+  };
+
+  async ngOnInit() {
+    const list = await axios.get('http://localhost:8080/api/produtos');
+    console.log(list);
   };
 
   deleteItem(product: IProduct): void {

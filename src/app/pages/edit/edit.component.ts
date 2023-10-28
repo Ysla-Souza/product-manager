@@ -3,7 +3,7 @@ import { ActivatedRoute, Router } from '@angular/router';
 import axios from 'axios';
 
 interface IParams {
-  code: string;
+  id: number;
 }
 
 @Component({
@@ -12,49 +12,55 @@ interface IParams {
   styleUrls: ['./edit.component.css']
 })
 export class EditComponent {
-  name: string;
-  code: string;
-  price: number;
+  id: number;
+  nome: string;
+  codigoBarras: string;
+  preco: number;
   errorMessage: string;
 
   constructor(private router: Router, private activateRoute: ActivatedRoute) {
-    this.name = '';
-    this.code = '';
-    this.price = 0;
+    this.id = 0;
+    this.nome = '';
+    this.codigoBarras = '';
+    this.preco = 0;
     this.errorMessage = '';
   }
 
-  ngOnInit() {
-    this.activateRoute.params.subscribe(params => {
+  async ngOnInit() {
+    this.activateRoute.params.subscribe(async params => {
       const typedParams = params as IParams;
-      if (typedParams && typedParams.code) {
-        console.log("Produto pelo seu código:", typedParams.code);
-        this.name = 'Produto';
-        this.code = typedParams.code;
-        this.price = 666;
+      if (typedParams && typedParams.id) {
+        const product = await axios.get(`http://localhost:8080/api/produtos/${typedParams.id}`);
+        this.id = product.data.id;
+        this.nome = product.data.nome;
+        this.codigoBarras = product.data.codigoBarras;
+        this.preco = product.data.preco;
       }
     });
   }
 
-  onSubmit(): void {
+  async onSubmit(): Promise<void> {
     this.errorMessage = '';
-    if (typeof this.price !== 'number' || this.price <= 0) this.errorMessage = 'Necessário fornecer um preço para o produto que seja numérico e que seja maior que zero';
-    if (this.code === '' || !this.code || this.code.length < 8) this.errorMessage = 'Necessário fornecer um código para o produto de pelo menos 8 caracteres';
-    if (this.name === '' || !this.name || this.name.length < 2) this.errorMessage = 'Necessário fornecer um nome para o produto de pelo menos dois caracteres';
+    if (typeof this.preco !== 'number' || this.preco <= 0) this.errorMessage = 'Necessário fornecer um preço para o produto que seja numérico e que seja maior que zero';
+    if (this.codigoBarras === '' || !this.codigoBarras || this.codigoBarras.length < 8) this.errorMessage = 'Necessário fornecer um código para o produto de pelo menos 8 caracteres';
+    if (this.nome === '' || !this.nome || this.nome.length < 2) this.errorMessage = 'Necessário fornecer um nome para o produto de pelo menos dois caracteres';
     if (this.errorMessage === '') {
       try {
         this.errorMessage = 'Aguarde, estamos processando seu cadastro...';
-        await axios.post('http://localhost:8080/api/produtos', {
-          codigoBarras: this.code,
-          preco: this.price,
-          nome: this.name,
+        await axios.put('http://localhost:8080/api/produtos', {
+          id: this.id,
+          codigoBarras: this.codigoBarras,
+          preco: this.preco,
+          nome: this.nome,
         });
-        this.name = '';
-        this.code = '';
-        this.price = 0;
-        this.errorMessage = 'Produto Cadastrado com sucesso!';
+        this.errorMessage = `Produto ${this.nome} Atualizado com sucesso! Redirecionando para a página principal...`;
+        this.id = 0;
+        this.nome = '';
+        this.codigoBarras = '';
+        this.preco = 0;
         setTimeout(() => {
           this.errorMessage = '';
+          this.router.navigate(['/']);
         }, 3000);
       } catch(error: unknown) {
         if (error instanceof Error && 'message' in error) {

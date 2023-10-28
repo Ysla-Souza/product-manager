@@ -15,7 +15,7 @@
       <td class="td-buttons">
         <button
           class="edit"
-          [routerLink]="['/edit', product.codigoBarras]"
+          [routerLink]="['/edit', product.id]"
         >
           Editar
         </button>
@@ -29,10 +29,13 @@
   </table>
   <div *ngIf="deleteConfirmationVisible" class="delete-window">
     <div class="delete-popup">
-      <h2 class="text">Tem certeza de que deseja excluir o produto "Nome do produto"?</h2>
+      <h2 class="text">Tem certeza de que deseja excluir o produto {{ itemToDelete.nome }}?</h2>
       <div class="div-buttons">
         <button (click)="confirmDelete()" class="button-confirm">Confirmar</button>
         <button (click)="cancelDelete()" class="button-cancel">Cancelar</button>
+      </div>
+      <div class="message">
+        <h1>{{ deleteMessage }}</h1>
       </div>
     </div>
   </div>

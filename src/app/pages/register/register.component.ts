@@ -2,10 +2,6 @@ import { HttpClient } from '@angular/common/http';
 import { Component } from '@angular/core';
 import axios from 'axios';
 
-interface CustomError {
-  message: string;
-}
-
 @Component({
   selector: 'app-register',
   templateUrl: './register.component.html',
@@ -33,11 +29,11 @@ export class RegisterComponent {
       let repeat = false;
       const list = await axios.get('http://localhost:8080/api/produtos');
       for(let i = 0; i < list.data.length; i += 1) {
-        if (list.data[i].codigoBarras.toLowerCase() === this.codigoBarras.toLowerCase()) {
-          this.errorMessage = "Já existe um Produto com o código de Barras informado";
-          repeat = true;
-        } else if (list.data[i].nome.toLowerCase() === this.nome.toLowerCase()) {
+        if (list.data[i].nome.toLowerCase() === this.nome.toLowerCase()) {
           this.errorMessage = "Já existe um Produto com o nome informado";
+          repeat = true;
+        } else if (list.data[i].codigoBarras.toLowerCase() === this.codigoBarras.toLowerCase()) {
+          this.errorMessage = "Já existe um Produto com o código de Barras informado";
           repeat = true;
         }
       }

@@ -45,29 +45,47 @@ export class EditComponent {
     if (this.codigoBarras === '' || !this.codigoBarras || this.codigoBarras.length < 8) this.errorMessage = 'Necessário fornecer um código para o produto de pelo menos 8 caracteres';
     if (this.nome === '' || !this.nome || this.nome.length < 2) this.errorMessage = 'Necessário fornecer um nome para o produto de pelo menos dois caracteres';
     if (this.errorMessage === '') {
-      try {
-        this.errorMessage = 'Aguarde, estamos processando seu cadastro...';
-        await axios.put('http://localhost:8080/api/produtos', {
-          id: this.id,
-          codigoBarras: this.codigoBarras,
-          preco: this.preco,
-          nome: this.nome,
-        });
-        this.errorMessage = `Produto ${this.nome} Atualizado com sucesso! Redirecionando para a página principal...`;
-        this.id = 0;
-        this.nome = '';
-        this.codigoBarras = '';
-        this.preco = 0;
-        setTimeout(() => {
-          this.errorMessage = '';
-          this.router.navigate(['/']);
-        }, 3000);
-      } catch(error: unknown) {
-        if (error instanceof Error && 'message' in error) {
-          const customError = error as Error;
-          this.errorMessage = `Ocorreu um erro ao tentar realizar o cadastro do Produto: ${customError.message}`;
-        } else {
-          this.errorMessage = 'Erro desconhecido';
+      let repeat = false;
+      const list = await axios.get('http://localhost:8080/api/produtos');
+      for(let i = 0; i < list.data.length; i += 1) {
+        if (list.data[i].nome.toLowerCase() === this.nome.toLowerCase()) {
+          if (list.data[i].id !== this.id) {
+            this.errorMessage = "Já existe um Produto com o nome informado";
+            repeat = true;
+          } 
+        } else if (list.data[i].codigoBarras.toLowerCase() === this.codigoBarras.toLowerCase()) {
+          if (list.data[i].id !== this.id) {
+            this.errorMessage = "Já existe um Produto com o código de Barras informado";
+            repeat = true;
+          }
+        }
+      }
+      console.log(repeat);
+      if (!repeat) {
+        try {
+          this.errorMessage = 'Aguarde, estamos processando seu cadastro...';
+          await axios.put('http://localhost:8080/api/produtos', {
+            id: this.id,
+            codigoBarras: this.codigoBarras,
+            preco: this.preco,
+            nome: this.nome,
+          });
+          this.errorMessage = `Produto ${this.nome} Atualizado com sucesso! Redirecionando para a página principal...`;
+          this.id = 0;
+          this.nome = '';
+          this.codigoBarras = '';
+          this.preco = 0;
+          setTimeout(() => {
+            this.errorMessage = '';
+            this.router.navigate(['/']);
+          }, 3000);
+        } catch(error: unknown) {
+          if (error instanceof Error && 'message' in error) {
+            const customError = error as Error;
+            this.errorMessage = `Ocorreu um erro ao tentar realizar o cadastro do Produto: ${customError.message}`;
+          } else {
+            this.errorMessage = 'Erro desconhecido';
+          }
         }
       }
     }

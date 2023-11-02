@@ -1,9 +1,15 @@
 import { Component } from '@angular/core';
 import { ActivatedRoute, Router } from '@angular/router';
-import axios from 'axios';
+import { HttpClient, HttpErrorResponse } from '@angular/common/http';
 
 interface IParams {
   id: number;
+}
+interface IProduct {
+  id: number;
+  nome: string;
+  codigoBarras: string;
+  preco: number;
 }
 
 @Component({
@@ -30,11 +36,19 @@ export class EditComponent {
     this.activateRoute.params.subscribe(async params => {
       const typedParams = params as IParams;
       if (typedParams && typedParams.id) {
-        const product = await axios.get(`http://localhost:8080/api/produtos/${typedParams.id}`);
-        this.id = product.data.id;
-        this.nome = product.data.nome;
-        this.codigoBarras = product.data.codigoBarras;
-        this.preco = product.data.preco;
+        try {
+          const product = await this.http.get<IProduct>(`http://localhost:8080/api/produtos/${typedParams.id}`).toPromise();
+          this.id = product.id;
+          this.nome = product.nome;
+          this.codigoBarras = product.codigoBarras;
+          this.preco = product.preco;
+        } catch (error: unknown) {
+          if (error instanceof HttpErrorResponse) {
+            this.errorMessage = 'Erro ao obter os dados do produto';
+          } else {
+            this.errorMessage = 'Erro desconhecido';
+          }
+        }
       }
     });
   }
@@ -45,8 +59,8 @@ export class EditComponent {
     if (this.codigoBarras === '' || !this.codigoBarras || this.codigoBarras.length < 8) this.errorMessage = 'Necessário fornecer um código para o produto de pelo menos 8 caracteres';
     if (this.nome === '' || !this.nome || this.nome.length < 2) this.errorMessage = 'Necessário fornecer um nome para o produto de pelo menos dois caracteres';
     if (this.errorMessage === '') {
-      let repeat = false;
-      const list = await axios.get('http://localhost:8080/api/produtos');
+      try {
+        const list = await this.http.get<IProduct[]>('http://localhost:8080/api/produtos').toPromise();
       for(let i = 0; i < list.data.length; i += 1) {
         if (list.data[i].nome.toLowerCase() === this.nome.toLowerCase()) {
           if (list.data[i].id !== this.id) {
@@ -64,12 +78,8 @@ export class EditComponent {
       if (!repeat) {
         try {
           this.errorMessage = 'Aguarde, estamos processando seu cadastro...';
-          await axios.put('http://localhost:8080/api/produtos', {
-            id: this.id,
-            codigoBarras: this.codigoBarras,
-            preco: this.preco,
-            nome: this.nome,
-          });
+          await this.http.put('http://localhost:8080/api/produtos', requestBody).toPromise();
+
           this.errorMessage = `Produto ${this.nome} Atualizado com sucesso! Redirecionando para a página principal...`;
           this.id = 0;
           this.nome = '';
@@ -90,4 +100,5 @@ export class EditComponent {
       }
     }
   }
+}
 }

@@ -18,6 +18,7 @@ interface IProduct {
   templateUrl: './edit.component.html',
   styleUrls: ['./edit.component.css']
 })
+
 export class EditComponent {
   id: number;
   nome: string;
